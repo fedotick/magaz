@@ -34,7 +34,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @Column(nullable = false)
     private Category category;
 
     @Column(nullable = false, updatable = false)
