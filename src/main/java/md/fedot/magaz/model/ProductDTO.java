@@ -1,10 +1,12 @@
 package md.fedot.magaz.model;
 
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,5 +35,11 @@ public class ProductDTO {
 
     @NotNull
     private Long category;
+
+    @Transient
+    private String createdAt;
+
+    @Transient
+    private String updatedAt;
 
 }
