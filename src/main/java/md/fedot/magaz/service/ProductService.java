@@ -21,8 +21,11 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductDTO> findAll() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(product -> mapToDTO(product, new ProductDTO()))
+                .toList();
     }
 
     public Product create(ProductDTO productDTO) {
@@ -30,6 +33,17 @@ public class ProductService {
         mapToEntity(productDTO, product);
         productRepository.save(product);
         return product;
+    }
+
+    public ProductDTO mapToDTO(final Product product, final ProductDTO productDTO) {
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setImage(product.getImage());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setQuantity(product.getQuantity());
+        productDTO.setCategory(product.getCategory().getId());
+        return productDTO;
     }
 
     public void mapToEntity(final ProductDTO productDTO, final Product product) {

@@ -16,8 +16,11 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryDTO> findAll() {
+        final List<Category> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(category -> mapToDTO(category, new CategoryDTO()))
+                .toList();
     }
 
     public Category create(CategoryDTO categoryDTO) {
@@ -26,9 +29,17 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public void mapToEntity(final CategoryDTO categoryDTO, final Category category) {
+    public CategoryDTO mapToDTO(final Category category, final CategoryDTO categoryDTO) {
+        categoryDTO.setId(category.getId());
+        categoryDTO.setName(category.getName());
+        categoryDTO.setDescription(category.getDescription());
+        return categoryDTO;
+    }
+
+    public Category mapToEntity(final CategoryDTO categoryDTO, final Category category) {
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
+        return category;
     }
 
 }
