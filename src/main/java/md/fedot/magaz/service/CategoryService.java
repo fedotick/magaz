@@ -2,6 +2,7 @@ package md.fedot.magaz.service;
 
 import md.fedot.magaz.domain.Category;
 import md.fedot.magaz.model.CategoryDTO;
+import md.fedot.magaz.model.ProductDTO;
 import md.fedot.magaz.repos.CategoryRepository;
 import md.fedot.magaz.util.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,17 @@ public class CategoryService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    public CategoryDTO create(CategoryDTO categoryDTO) {
+    public CategoryDTO create(final CategoryDTO categoryDTO) {
         final Category category = new Category();
         mapToEntity(categoryDTO, category);
         return mapToDTO(categoryRepository.save(category), categoryDTO);
+    }
+
+    public CategoryDTO update(final Long id, final CategoryDTO categoryDTO) {
+        final Category category = categoryRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+        mapToEntity(categoryDTO, category);
+        return mapToDTO(categoryRepository.save(category), new CategoryDTO());
     }
 
     public CategoryDTO mapToDTO(final Category category, final CategoryDTO categoryDTO) {
