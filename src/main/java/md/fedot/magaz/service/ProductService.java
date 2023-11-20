@@ -37,10 +37,17 @@ public class ProductService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    public ProductDTO create(ProductDTO productDTO) {
+    public ProductDTO create(final ProductDTO productDTO) {
         final Product product = new Product();
         mapToEntity(productDTO, product);
         return mapToDTO(productRepository.save(product), productDTO);
+    }
+
+    public ProductDTO update(final Long id, final ProductDTO productDTO) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+        mapToEntity(productDTO, product);
+        return mapToDTO(productRepository.save(product), new ProductDTO());
     }
 
     public ProductDTO mapToDTO(final Product product, final ProductDTO productDTO) {
