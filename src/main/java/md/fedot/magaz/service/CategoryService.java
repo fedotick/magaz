@@ -3,6 +3,7 @@ package md.fedot.magaz.service;
 import md.fedot.magaz.domain.Category;
 import md.fedot.magaz.model.CategoryDTO;
 import md.fedot.magaz.repos.CategoryRepository;
+import md.fedot.magaz.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -27,7 +28,7 @@ public class CategoryService {
     public CategoryDTO get(final Long id) {
         return categoryRepository.findById(id)
                 .map(category -> mapToDTO(category, new CategoryDTO()))
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(NotFoundException::new);
     }
 
     public CategoryDTO create(CategoryDTO categoryDTO) {

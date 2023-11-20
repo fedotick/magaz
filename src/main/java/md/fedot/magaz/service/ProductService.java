@@ -5,6 +5,8 @@ import md.fedot.magaz.domain.Product;
 import md.fedot.magaz.model.ProductDTO;
 import md.fedot.magaz.repos.CategoryRepository;
 import md.fedot.magaz.repos.ProductRepository;
+import md.fedot.magaz.util.BadRequestException;
+import md.fedot.magaz.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
@@ -32,7 +34,7 @@ public class ProductService {
     public ProductDTO get(final Long id) {
         return productRepository.findById(id)
                 .map(product -> mapToDTO(product, new ProductDTO()))
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(NotFoundException::new);
     }
 
     public ProductDTO create(ProductDTO productDTO) {
@@ -62,7 +64,7 @@ public class ProductService {
         product.setPrice(productDTO.getPrice());
         product.setQuantity(productDTO.getQuantity());
         final Category category = categoryRepository.findById(productDTO.getCategory())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(BadRequestException::new);
         product.setCategory(category);
     }
 
