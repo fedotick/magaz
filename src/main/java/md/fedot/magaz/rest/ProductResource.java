@@ -24,6 +24,11 @@ public class ProductResource {
         return ResponseEntity.ok(productService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable final Long id) {
+        return ResponseEntity.ok(productService.get(id));
+    }
+
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid final ProductDTO productDTO) {
         return ResponseEntity.ok(productService.create(productDTO));

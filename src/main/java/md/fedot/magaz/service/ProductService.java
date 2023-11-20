@@ -29,6 +29,12 @@ public class ProductService {
                 .toList();
     }
 
+    public ProductDTO get(final Long id) {
+        return productRepository.findById(id)
+                .map(product -> mapToDTO(product, new ProductDTO()))
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+    }
+
     public ProductDTO create(ProductDTO productDTO) {
         final Product product = new Product();
         mapToEntity(productDTO, product);
