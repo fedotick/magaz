@@ -24,6 +24,12 @@ public class CategoryService {
                 .toList();
     }
 
+    public CategoryDTO get(final Long id) {
+        return categoryRepository.findById(id)
+                .map(category -> mapToDTO(category, new CategoryDTO()))
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
     public CategoryDTO create(CategoryDTO categoryDTO) {
         final Category category = new Category();
         mapToEntity(categoryDTO, category);

@@ -24,6 +24,11 @@ public class CategoryResource {
         return ResponseEntity.ok(categoryService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTO> getCategory(@PathVariable final Long id) {
+        return ResponseEntity.ok(categoryService.get(id));
+    }
+
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody @Valid final CategoryDTO categoryDTO) {
         return ResponseEntity.ok(categoryService.create(categoryDTO));
