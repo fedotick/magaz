@@ -7,6 +7,7 @@ import md.fedot.magaz.repos.CategoryRepository;
 import md.fedot.magaz.repos.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -43,6 +44,9 @@ public class ProductService {
         productDTO.setPrice(product.getPrice());
         productDTO.setQuantity(product.getQuantity());
         productDTO.setCategory(product.getCategory().getId());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        productDTO.setCreatedAt(product.getCreatedAt().format(formatter));
+        productDTO.setUpdatedAt(product.getUpdatedAt().format(formatter));
         return productDTO;
     }
 

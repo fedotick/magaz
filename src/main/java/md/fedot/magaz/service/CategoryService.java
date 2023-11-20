@@ -5,6 +5,7 @@ import md.fedot.magaz.model.CategoryDTO;
 import md.fedot.magaz.repos.CategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -33,6 +34,9 @@ public class CategoryService {
         categoryDTO.setId(category.getId());
         categoryDTO.setName(category.getName());
         categoryDTO.setDescription(category.getDescription());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+        categoryDTO.setCreatedAt(category.getCreatedAt().format(formatter));
+        categoryDTO.setUpdatedAt(category.getUpdatedAt().format(formatter));
         return categoryDTO;
     }
 
