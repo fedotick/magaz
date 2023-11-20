@@ -45,6 +45,10 @@ public class CategoryService {
         return mapToDTO(categoryRepository.save(category), new CategoryDTO());
     }
 
+    public void delete(final Long id) {
+        categoryRepository.deleteById(id);
+    }
+
     public CategoryDTO mapToDTO(final Category category, final CategoryDTO categoryDTO) {
         categoryDTO.setId(category.getId());
         categoryDTO.setName(category.getName());
