@@ -25,7 +25,7 @@ public class CategoryResource {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody @Valid final CategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody @Valid final CategoryDTO categoryDTO) {
         return ResponseEntity.ok(categoryService.create(categoryDTO));
     }
 

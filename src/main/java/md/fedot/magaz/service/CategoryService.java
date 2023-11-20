@@ -24,10 +24,10 @@ public class CategoryService {
                 .toList();
     }
 
-    public Category create(CategoryDTO categoryDTO) {
+    public CategoryDTO create(CategoryDTO categoryDTO) {
         final Category category = new Category();
         mapToEntity(categoryDTO, category);
-        return categoryRepository.save(category);
+        return mapToDTO(categoryRepository.save(category), categoryDTO);
     }
 
     public CategoryDTO mapToDTO(final Category category, final CategoryDTO categoryDTO) {

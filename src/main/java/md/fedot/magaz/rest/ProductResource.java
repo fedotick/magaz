@@ -25,7 +25,7 @@ public class ProductResource {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody @Valid final ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid final ProductDTO productDTO) {
         return ResponseEntity.ok(productService.create(productDTO));
     }
 

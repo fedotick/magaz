@@ -29,11 +29,10 @@ public class ProductService {
                 .toList();
     }
 
-    public Product create(ProductDTO productDTO) {
+    public ProductDTO create(ProductDTO productDTO) {
         final Product product = new Product();
         mapToEntity(productDTO, product);
-        productRepository.save(product);
-        return product;
+        return mapToDTO(productRepository.save(product), productDTO);
     }
 
     public ProductDTO mapToDTO(final Product product, final ProductDTO productDTO) {
