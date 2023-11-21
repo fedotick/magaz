@@ -4,6 +4,7 @@ import md.fedot.magaz.domain.Category;
 import md.fedot.magaz.model.CategoryDTO;
 import md.fedot.magaz.model.ProductDTO;
 import md.fedot.magaz.repos.CategoryRepository;
+import md.fedot.magaz.repos.ProductRepository;
 import md.fedot.magaz.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,12 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
-    public CategoryService(final CategoryRepository categoryRepository) {
+    public CategoryService(final CategoryRepository categoryRepository,
+                           final ProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     public List<CategoryDTO> findAll() {
@@ -46,6 +50,9 @@ public class CategoryService {
     }
 
     public void delete(final Long id) {
+        if (categoryRepository.findById(id).isPresent()) {
+            productRepository.deleteAllByCategoryId(id);
+        }
         categoryRepository.deleteById(id);
     }
 
