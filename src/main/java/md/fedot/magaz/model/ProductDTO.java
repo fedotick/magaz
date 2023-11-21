@@ -33,7 +33,6 @@ public class ProductDTO {
     @Max(value = 32767)
     private Short quantity;
 
-    @NotNull
     private Long category;
 
     @Transient

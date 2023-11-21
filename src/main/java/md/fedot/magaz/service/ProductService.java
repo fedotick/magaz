@@ -61,7 +61,10 @@ public class ProductService {
         productDTO.setImage(product.getImage());
         productDTO.setPrice(product.getPrice());
         productDTO.setQuantity(product.getQuantity());
-        productDTO.setCategory(product.getCategory().getId());
+
+        final Category category = product.getCategory();
+        productDTO.setCategory((category == null) ? null : category.getId());
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
         productDTO.setCreatedAt(product.getCreatedAt().format(formatter));
         productDTO.setUpdatedAt(product.getUpdatedAt().format(formatter));
@@ -74,8 +77,12 @@ public class ProductService {
         product.setImage(productDTO.getImage());
         product.setPrice(productDTO.getPrice());
         product.setQuantity(productDTO.getQuantity());
-        final Category category = categoryRepository.findById(productDTO.getCategory())
-                .orElseThrow(BadRequestException::new);
+        System.out.println(productDTO.getCategory());
+        Category category = null;
+        if (productDTO.getCategory() != null) {
+            category = categoryRepository.findById(productDTO.getCategory())
+                            .orElseThrow(BadRequestException::new);
+        }
         product.setCategory(category);
     }
 
