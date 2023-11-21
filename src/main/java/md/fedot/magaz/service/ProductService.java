@@ -68,22 +68,23 @@ public class ProductService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
         productDTO.setCreatedAt(product.getCreatedAt().format(formatter));
         productDTO.setUpdatedAt(product.getUpdatedAt().format(formatter));
+
         return productDTO;
     }
 
-    public void mapToEntity(final ProductDTO productDTO, final Product product) {
+    public Product mapToEntity(final ProductDTO productDTO, final Product product) {
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setImage(productDTO.getImage());
         product.setPrice(productDTO.getPrice());
         product.setQuantity(productDTO.getQuantity());
-        System.out.println(productDTO.getCategory());
-        Category category = null;
-        if (productDTO.getCategory() != null) {
-            category = categoryRepository.findById(productDTO.getCategory())
-                            .orElseThrow(BadRequestException::new);
-        }
+        
+        Category category = (productDTO.getCategory() == null)
+                ? null
+                :categoryRepository.findById(productDTO.getCategory())
+                .orElseThrow(BadRequestException::new);
         product.setCategory(category);
+        return product;
     }
 
 }
