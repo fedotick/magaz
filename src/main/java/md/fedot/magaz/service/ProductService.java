@@ -50,6 +50,10 @@ public class ProductService {
         return mapToDTO(productRepository.save(product), new ProductDTO());
     }
 
+    public void delete(final Long id) {
+        productRepository.deleteById(id);
+    }
+
     public ProductDTO mapToDTO(final Product product, final ProductDTO productDTO) {
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());
