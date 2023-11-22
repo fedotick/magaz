@@ -1,8 +1,9 @@
 package md.fedot.magaz.rest;
 
 import jakarta.validation.Valid;
-import md.fedot.magaz.domain.Category;
-import md.fedot.magaz.model.CategoryDTO;
+import lombok.AllArgsConstructor;
+import md.fedot.magaz.model.CategoryRequestDTO;
+import md.fedot.magaz.model.CategoryResponseDTO;
 import md.fedot.magaz.service.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,34 +11,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/categories")
 public class CategoryResource {
 
     private final CategoryService categoryService;
 
-    public CategoryResource(final CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getCategories() {
+    public ResponseEntity<List<CategoryResponseDTO>> getCategories() {
         return ResponseEntity.ok(categoryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategory(@PathVariable final Long id) {
+    public ResponseEntity<CategoryResponseDTO> getCategory(@PathVariable final Long id) {
         return ResponseEntity.ok(categoryService.get(id));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody @Valid final CategoryDTO categoryDTO) {
-        return ResponseEntity.ok(categoryService.create(categoryDTO));
+    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody @Valid final CategoryRequestDTO categoryRequestDTO) {
+        return ResponseEntity.ok(categoryService.create(categoryRequestDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable final Long id,
-                                                      @RequestBody @Valid final CategoryDTO categoryDTO) {
-        return ResponseEntity.ok(categoryService.update(id, categoryDTO));
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable final Long id,
+                                                             @RequestBody @Valid final CategoryRequestDTO categoryRequestDTO) {
+        return ResponseEntity.ok(categoryService.update(id, categoryRequestDTO));
     }
 
     @DeleteMapping("/{id}")

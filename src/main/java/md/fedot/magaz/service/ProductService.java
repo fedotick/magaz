@@ -1,8 +1,10 @@
 package md.fedot.magaz.service;
 
+import lombok.AllArgsConstructor;
 import md.fedot.magaz.domain.Category;
 import md.fedot.magaz.domain.Product;
-import md.fedot.magaz.model.ProductDTO;
+import md.fedot.magaz.model.ProductRequestDTO;
+import md.fedot.magaz.model.ProductResponseDTO;
 import md.fedot.magaz.repos.CategoryRepository;
 import md.fedot.magaz.repos.ProductRepository;
 import md.fedot.magaz.util.BadRequestException;
@@ -13,75 +15,70 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProductService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    public ProductService(final CategoryRepository categoryRepository,
-                          final ProductRepository productRepository) {
-        this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
-    }
-
-    public List<ProductDTO> findAll() {
+    public List<ProductResponseDTO> findAll() {
         List<Product> products = productRepository.findAll();
         return products.stream()
-                .map(product -> mapToDTO(product, new ProductDTO()))
+                .map(product -> mapToDTO(product, new ProductResponseDTO()))
                 .toList();
     }
 
-    public ProductDTO get(final Long id) {
+    public ProductResponseDTO get(final Long id) {
         return productRepository.findById(id)
-                .map(product -> mapToDTO(product, new ProductDTO()))
+                .map(product -> mapToDTO(product, new ProductResponseDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public ProductDTO create(final ProductDTO productDTO) {
+    public ProductResponseDTO create(final ProductRequestDTO productRequestDTO) {
         final Product product = new Product();
-        mapToEntity(productDTO, product);
-        return mapToDTO(productRepository.save(product), productDTO);
+        mapToEntity(productRequestDTO, product);
+        return mapToDTO(productRepository.save(product), new ProductResponseDTO());
     }
 
-    public ProductDTO update(final Long id, final ProductDTO productDTO) {
+    public ProductResponseDTO update(final Long id, final ProductRequestDTO productRequestDTO) {
         Product product = productRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(productDTO, product);
-        return mapToDTO(productRepository.save(product), new ProductDTO());
+        mapToEntity(productRequestDTO, product);
+        return mapToDTO(productRepository.save(product), new ProductResponseDTO());
     }
 
     public void delete(final Long id) {
         productRepository.deleteById(id);
     }
 
-    public ProductDTO mapToDTO(final Product product, final ProductDTO productDTO) {
-        productDTO.setId(product.getId());
-        productDTO.setName(product.getName());
-        productDTO.setDescription(product.getDescription());
-        productDTO.setImage(product.getImage());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setQuantity(product.getQuantity());
+    public ProductResponseDTO mapToDTO(final Product product, final ProductResponseDTO productResponseDTO) {
+        productResponseDTO.setId(product.getId());
+        productResponseDTO.setName(product.getName());
+        productResponseDTO.setDescription(product.getDescription());
+        productResponseDTO.setImage(product.getImage());
+        productResponseDTO.setPrice(product.getPrice());
+        productResponseDTO.setQuantity(product.getQuantity());
 
         final Category category = product.getCategory();
-        productDTO.setCategory((category == null) ? null : category.getId());
+        productResponseDTO.setCategory((category == null) ? null : category.getName());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        productDTO.setCreatedAt(product.getCreatedAt().format(formatter));
-        productDTO.setUpdatedAt(product.getUpdatedAt().format(formatter));
+        productResponseDTO.setCreatedAt(product.getCreatedAt().format(formatter));
+        productResponseDTO.setUpdatedAt(product.getUpdatedAt().format(formatter));
 
-        return productDTO;
+        return productResponseDTO;
     }
 
-    public Product mapToEntity(final ProductDTO productDTO, final Product product) {
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setImage(productDTO.getImage());
-        product.setPrice(productDTO.getPrice());
-        product.setQuantity(productDTO.getQuantity());
+    public Product mapToEntity(final ProductRequestDTO productRequestDTO, final Product product) {
+        product.setName(productRequestDTO.getName());
+        product.setDescription(productRequestDTO.getDescription());
+        product.setImage(productRequestDTO.getImage());
+        product.setPrice(productRequestDTO.getPrice());
+        product.setQuantity(productRequestDTO.getQuantity());
         
-        Category category = (productDTO.getCategory() == null)
+        Category category = (productRequestDTO.getCategory() == null)
                 ? null
-                :categoryRepository.findById(productDTO.getCategory())
+                :categoryRepository.findById(productRequestDTO.getCategory())
                 .orElseThrow(BadRequestException::new);
         product.setCategory(category);
         return product;

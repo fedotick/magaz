@@ -1,18 +1,12 @@
 package md.fedot.magaz.model;
 
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-@Getter
-@Setter
-public class ProductDTO {
-
-    private Long id;
+@Data
+public class ProductRequestDTO {
 
     @NotEmpty
     @Size(max = 50)
@@ -34,11 +28,5 @@ public class ProductDTO {
     private Short quantity;
 
     private Long category;
-
-    @Transient
-    private String createdAt;
-
-    @Transient
-    private String updatedAt;
 
 }

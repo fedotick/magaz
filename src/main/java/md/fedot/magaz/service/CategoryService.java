@@ -1,8 +1,9 @@
 package md.fedot.magaz.service;
 
+import lombok.AllArgsConstructor;
 import md.fedot.magaz.domain.Category;
-import md.fedot.magaz.model.CategoryDTO;
-import md.fedot.magaz.model.ProductDTO;
+import md.fedot.magaz.model.CategoryRequestDTO;
+import md.fedot.magaz.model.CategoryResponseDTO;
 import md.fedot.magaz.repos.CategoryRepository;
 import md.fedot.magaz.repos.ProductRepository;
 import md.fedot.magaz.util.NotFoundException;
@@ -12,41 +13,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    public CategoryService(final CategoryRepository categoryRepository,
-                           final ProductRepository productRepository) {
-        this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
-    }
-
-    public List<CategoryDTO> findAll() {
+    public List<CategoryResponseDTO> findAll() {
         final List<Category> categories = categoryRepository.findAll();
         return categories.stream()
-                .map(category -> mapToDTO(category, new CategoryDTO()))
+                .map(category -> mapToDTO(category, new CategoryResponseDTO()))
                 .toList();
     }
 
-    public CategoryDTO get(final Long id) {
+    public CategoryResponseDTO get(final Long id) {
         return categoryRepository.findById(id)
-                .map(category -> mapToDTO(category, new CategoryDTO()))
+                .map(category -> mapToDTO(category, new CategoryResponseDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public CategoryDTO create(final CategoryDTO categoryDTO) {
+    public CategoryResponseDTO create(final CategoryRequestDTO categoryRequestDTO) {
         final Category category = new Category();
-        mapToEntity(categoryDTO, category);
-        return mapToDTO(categoryRepository.save(category), categoryDTO);
+        mapToEntity(categoryRequestDTO, category);
+        return mapToDTO(categoryRepository.save(category), new CategoryResponseDTO());
     }
 
-    public CategoryDTO update(final Long id, final CategoryDTO categoryDTO) {
+    public CategoryResponseDTO update(final Long id, final CategoryRequestDTO categoryRequestDTO) {
         final Category category = categoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(categoryDTO, category);
-        return mapToDTO(categoryRepository.save(category), new CategoryDTO());
+        mapToEntity(categoryRequestDTO, category);
+        return mapToDTO(categoryRepository.save(category), new CategoryResponseDTO());
     }
 
     public void delete(final Long id) {
@@ -56,19 +52,19 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    public CategoryDTO mapToDTO(final Category category, final CategoryDTO categoryDTO) {
-        categoryDTO.setId(category.getId());
-        categoryDTO.setName(category.getName());
-        categoryDTO.setDescription(category.getDescription());
+    public CategoryResponseDTO mapToDTO(final Category category, final CategoryResponseDTO categoryResponseDTO) {
+        categoryResponseDTO.setId(category.getId());
+        categoryResponseDTO.setName(category.getName());
+        categoryResponseDTO.setDescription(category.getDescription());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        categoryDTO.setCreatedAt(category.getCreatedAt().format(formatter));
-        categoryDTO.setUpdatedAt(category.getUpdatedAt().format(formatter));
-        return categoryDTO;
+        categoryResponseDTO.setCreatedAt(category.getCreatedAt().format(formatter));
+        categoryResponseDTO.setUpdatedAt(category.getUpdatedAt().format(formatter));
+        return categoryResponseDTO;
     }
 
-    public Category mapToEntity(final CategoryDTO categoryDTO, final Category category) {
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
+    public Category mapToEntity(final CategoryRequestDTO categoryRequestDTO, final Category category) {
+        category.setName(categoryRequestDTO.getName());
+        category.setDescription(categoryRequestDTO.getDescription());
         return category;
     }
 
