@@ -7,6 +7,7 @@ import md.fedot.magaz.model.ProductResponseDTO;
 import md.fedot.magaz.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class ProductResource {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Valid final ProductRequestDTO productDTO) {
-        return ResponseEntity.ok(productService.create(productDTO));
+    public ResponseEntity<ProductResponseDTO> createProduct(@ModelAttribute @Valid ProductRequestDTO productRequestDTO) {
+        return ResponseEntity.ok(productService.create(productRequestDTO));
     }
 
     @PutMapping("/{id}")

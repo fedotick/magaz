@@ -2,6 +2,7 @@ package md.fedot.magaz.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -14,8 +15,8 @@ public class ProductRequestDTO {
 
     private String description;
 
-    @NotEmpty
-    private String image;
+    @NotNull
+    private MultipartFile image;
 
     @NotNull
     @Min(value = 0)

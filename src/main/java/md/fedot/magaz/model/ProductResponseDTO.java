@@ -10,7 +10,7 @@ public class ProductResponseDTO {
     private Long id;
     private String name;
     private String description;
-    private String image;
+    private byte[] image;
     private BigDecimal price;
     private Short quantity;
     private String category;

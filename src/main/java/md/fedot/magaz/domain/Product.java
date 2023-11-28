@@ -23,8 +23,8 @@ public class Product {
     @Column(columnDefinition = "text")
     private String description;
 
-    @Column(nullable = false)
-    private String image;
+    @Column(columnDefinition = "longblob", nullable = false)
+    private byte[] image;
 
     @Column(nullable = false, precision = 8, scale = 2)
     private BigDecimal price;

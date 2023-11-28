@@ -11,6 +11,7 @@ import md.fedot.magaz.util.BadRequestException;
 import md.fedot.magaz.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -72,10 +73,13 @@ public class ProductService {
     public Product mapToEntity(final ProductRequestDTO productRequestDTO, final Product product) {
         product.setName(productRequestDTO.getName());
         product.setDescription(productRequestDTO.getDescription());
-        product.setImage(productRequestDTO.getImage());
+        try {
+            product.setImage(productRequestDTO.getImage().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         product.setPrice(productRequestDTO.getPrice());
         product.setQuantity(productRequestDTO.getQuantity());
-        
         Category category = (productRequestDTO.getCategory() == null)
                 ? null
                 :categoryRepository.findById(productRequestDTO.getCategory())
