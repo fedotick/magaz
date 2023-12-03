@@ -1,19 +1,19 @@
 package md.fedot.magaz.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
 
@@ -41,6 +41,9 @@ public class Product {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders;
 
     @PrePersist
     protected void onCreate() {
