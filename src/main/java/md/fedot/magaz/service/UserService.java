@@ -7,6 +7,7 @@ import md.fedot.magaz.model.UserResponseDTO;
 import md.fedot.magaz.repos.UserRepository;
 import md.fedot.magaz.util.DuplicateRecordException;
 import md.fedot.magaz.util.NotFoundException;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,7 +54,8 @@ public class UserService {
 
     public User mapToEntity(final UserRequestDTO userRequestDTO, final User user) {
         user.setUsername(userRequestDTO.getUsername());
-        user.setPassword(userRequestDTO.getPassword());
+        String hashedPassword  = BCrypt.hashpw(userRequestDTO.getPassword(), BCrypt.gensalt(12));
+        user.setPassword(hashedPassword);
         return user;
     }
 
