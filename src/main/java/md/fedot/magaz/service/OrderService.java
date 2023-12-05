@@ -1,6 +1,5 @@
 package md.fedot.magaz.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import md.fedot.magaz.domain.Order;
 import md.fedot.magaz.domain.Product;
@@ -12,7 +11,6 @@ import md.fedot.magaz.repos.ProductRepository;
 import md.fedot.magaz.repos.UserRepository;
 import md.fedot.magaz.util.BadRequestException;
 import md.fedot.magaz.util.NotFoundException;
-import org.hibernate.mapping.Selectable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

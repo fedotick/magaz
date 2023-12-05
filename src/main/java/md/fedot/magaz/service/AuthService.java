@@ -1,8 +1,5 @@
 package md.fedot.magaz.service;
 
-//import codes.rytis.logindemo.model.LoginResponse;
-//import codes.rytis.logindemo.security.JwtIssuer;
-//import codes.rytis.logindemo.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import md.fedot.magaz.model.LoginResponse;
 import md.fedot.magaz.security.JwtIssuer;

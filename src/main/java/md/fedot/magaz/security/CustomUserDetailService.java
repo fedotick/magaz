@@ -1,6 +1,5 @@
 package md.fedot.magaz.security;
 
-//import codes.rytis.logindemo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import md.fedot.magaz.service.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
