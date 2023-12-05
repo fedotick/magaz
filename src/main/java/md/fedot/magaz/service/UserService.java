@@ -10,6 +10,7 @@ import md.fedot.magaz.util.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -61,6 +62,10 @@ public class UserService {
         userResponseDTO.setId(user.getId());
         userResponseDTO.setUsername(user.getUsername());
         return userResponseDTO;
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
 }
