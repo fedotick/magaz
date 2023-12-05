@@ -7,6 +7,7 @@ import md.fedot.magaz.model.UserResponseDTO;
 import md.fedot.magaz.repos.UserRepository;
 import md.fedot.magaz.util.DuplicateRecordException;
 import md.fedot.magaz.util.NotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,7 +55,8 @@ public class UserService {
 
     public User mapToEntity(final UserRequestDTO userRequestDTO, final User user) {
         user.setUsername(userRequestDTO.getUsername());
-        user.setPassword(userRequestDTO.getPassword());
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
         return user;
     }
 
