@@ -35,8 +35,8 @@ public class ProductResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable final Long id,
-                                                            @RequestBody @Valid final ProductRequestDTO productDTO) {
-        return ResponseEntity.ok(productService.update(id, productDTO));
+                                                            @ModelAttribute @Valid ProductRequestDTO productRequestDTO) {
+        return ResponseEntity.ok(productService.update(id, productRequestDTO));
     }
 
     @DeleteMapping("/{id}")
