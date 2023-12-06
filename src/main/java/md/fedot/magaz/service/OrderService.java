@@ -26,20 +26,21 @@ public class OrderService {
     private final UserRepository userRepository;
 
     public List<OrderResponseDto> getAllOrders() {
-        return orderRepository.findAll().stream()
-                .map(order -> mapToDTO(order, new OrderResponseDto()))
+        return orderRepository.findAll()
+                .stream()
+                .map(OrderResponseDto::new)
                 .toList();
     }
 
     public OrderResponseDto getOrder(Long id) {
         return orderRepository.findById(id)
-                .map(order -> mapToDTO(order, new OrderResponseDto()))
+                .map(OrderResponseDto::new)
                 .orElseThrow(NotFoundException::new);
     }
 
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Order order = mapToEntity(orderRequestDto, new Order());
-        return mapToDTO(orderRepository.save(order), new OrderResponseDto());
+        return new OrderResponseDto(orderRepository.save(order));
     }
 
     public OrderResponseDto updateOrder(Long id, OrderRequestDto orderRequestDto) {
@@ -47,7 +48,7 @@ public class OrderService {
                 .orElseThrow(NotFoundException::new);
         mapToEntity(orderRequestDto, order);
         deleteOrder(id);
-        return mapToDTO(orderRepository.save(order), new OrderResponseDto());
+        return new OrderResponseDto(orderRepository.save(order));
     }
 
     public void deleteOrder(Long id) {
@@ -75,17 +76,6 @@ public class OrderService {
         order.setAmount(amount);
 
         return order;
-    }
-
-    public OrderResponseDto mapToDTO(Order order, OrderResponseDto orderResponseDto) {
-        orderResponseDto.setId(order.getId());
-        orderResponseDto.setUserId(order.getUser().getId());
-        orderResponseDto.setProductIds(order.getProducts().stream().map(Product::getId).toList());
-        orderResponseDto.setAmount(order.getAmount());
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        orderResponseDto.setCreatedAt(order.getCreatedAt().format(formatter));
-        return orderResponseDto;
     }
 
 }

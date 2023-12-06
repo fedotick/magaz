@@ -23,51 +23,33 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<ProductResponseDto> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(product -> mapToDTO(product, new ProductResponseDto()))
+        return productRepository.findAll()
+                .stream()
+                .map(ProductResponseDto::new)
                 .toList();
     }
 
     public ProductResponseDto getProduct(Long id) {
         return productRepository.findById(id)
-                .map(product -> mapToDTO(product, new ProductResponseDto()))
+                .map(ProductResponseDto::new)
                 .orElseThrow(NotFoundException::new);
     }
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
         Product product = new Product();
         mapToEntity(productRequestDto, product);
-        return mapToDTO(productRepository.save(product), new ProductResponseDto());
+        return new ProductResponseDto(productRepository.save(product));
     }
 
     public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
         Product product = productRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(productRequestDto, product);
-        return mapToDTO(productRepository.save(product), new ProductResponseDto());
+        return new ProductResponseDto(productRepository.save(product));
     }
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
-    }
-
-    public ProductResponseDto mapToDTO(Product product, ProductResponseDto productResponseDto) {
-        productResponseDto.setId(product.getId());
-        productResponseDto.setName(product.getName());
-        productResponseDto.setDescription(product.getDescription());
-        productResponseDto.setImage(product.getImage());
-        productResponseDto.setPrice(product.getPrice());
-        productResponseDto.setQuantity(product.getQuantity());
-
-        Category category = product.getCategory();
-        productResponseDto.setCategory((category == null) ? null : category.getName());
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        productResponseDto.setCreatedAt(product.getCreatedAt().format(formatter));
-        productResponseDto.setUpdatedAt(product.getUpdatedAt().format(formatter));
-
-        return productResponseDto;
     }
 
     public Product mapToEntity(ProductRequestDto productRequestDto, Product product) {

@@ -19,14 +19,15 @@ public class UserService {
     private final UserRepository userRepository;
 
     public List<UserResponseDto> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(user -> mapToDTO(user, new UserResponseDto()))
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponseDto::new)
                 .toList();
     }
 
     public UserResponseDto getUser(Long id) {
         return userRepository.findById(id)
-                .map(user -> mapToDTO(user, new UserResponseDto()))
+                .map(UserResponseDto::new)
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -35,7 +36,7 @@ public class UserService {
             throw new DuplicateRecordException("This username is taken!");
         }
         User user = mapToEntity(userRequestDto, new User());
-        return mapToDTO(userRepository.save(user), new UserResponseDto());
+        return new UserResponseDto(userRepository.save(user));
     }
 
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) {
@@ -45,7 +46,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(userRequestDto, user);
-        return mapToDTO(userRepository.save(user), new UserResponseDto());
+        return new UserResponseDto(userRepository.save(user));
     }
 
     public void deleteUser(Long id) {
@@ -57,12 +58,6 @@ public class UserService {
         String hashedPassword  = BCrypt.hashpw(userRequestDTO.getPassword(), BCrypt.gensalt(12));
         user.setPassword(hashedPassword);
         return user;
-    }
-
-    public UserResponseDto mapToDTO(User user, UserResponseDto userResponseDto) {
-        userResponseDto.setId(user.getId());
-        userResponseDto.setUsername(user.getUsername());
-        return userResponseDto;
     }
 
 }

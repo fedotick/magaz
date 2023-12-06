@@ -19,30 +19,30 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    public List<CategoryResponseDto> findAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        return categories.stream()
-                .map(category -> mapToDTO(category, new CategoryResponseDto()))
+    public List<CategoryResponseDto> getAllCategories() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(CategoryResponseDto::new)
                 .toList();
     }
 
     public CategoryResponseDto getCategory(Long id) {
         return categoryRepository.findById(id)
-                .map(category -> mapToDTO(category, new CategoryResponseDto()))
+                .map(CategoryResponseDto::new)
                 .orElseThrow(NotFoundException::new);
     }
 
     public CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto) {
         Category category = new Category();
         mapToEntity(categoryRequestDto, category);
-        return mapToDTO(categoryRepository.save(category), new CategoryResponseDto());
+        return new CategoryResponseDto(categoryRepository.save(category));
     }
 
     public CategoryResponseDto updateCategory(Long id, CategoryRequestDto categoryRequestDto) {
-        final Category category = categoryRepository.findById(id)
+        Category category = categoryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         mapToEntity(categoryRequestDto, category);
-        return mapToDTO(categoryRepository.save(category), new CategoryResponseDto());
+        return new CategoryResponseDto(categoryRepository.save(category));
     }
 
     public void deleteCategory(Long id) {
@@ -50,16 +50,6 @@ public class CategoryService {
             productRepository.deleteAllByCategoryId(id);
         }
         categoryRepository.deleteById(id);
-    }
-
-    public CategoryResponseDto mapToDTO(Category category, CategoryResponseDto categoryResponseDto) {
-        categoryResponseDto.setId(category.getId());
-        categoryResponseDto.setName(category.getName());
-        categoryResponseDto.setDescription(category.getDescription());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        categoryResponseDto.setCreatedAt(category.getCreatedAt().format(formatter));
-        categoryResponseDto.setUpdatedAt(category.getUpdatedAt().format(formatter));
-        return categoryResponseDto;
     }
 
     public Category mapToEntity(CategoryRequestDto categoryRequestDTO, Category category) {
