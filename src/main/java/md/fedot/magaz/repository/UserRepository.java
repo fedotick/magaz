@@ -1,6 +1,6 @@
-package md.fedot.magaz.repos;
+package md.fedot.magaz.repository;
 
-import md.fedot.magaz.domain.User;
+import md.fedot.magaz.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

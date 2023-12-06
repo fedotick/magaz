@@ -1,9 +1,9 @@
-package md.fedot.magaz.model;
+package md.fedot.magaz.dto;
 
 import lombok.Data;
 
 @Data
-public class CategoryResponseDTO {
+public class CategoryResponseDto {
 
     private Long id;
     private String name;

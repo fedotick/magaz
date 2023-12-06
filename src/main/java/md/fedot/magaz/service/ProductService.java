@@ -1,14 +1,14 @@
 package md.fedot.magaz.service;
 
 import lombok.AllArgsConstructor;
-import md.fedot.magaz.domain.Category;
-import md.fedot.magaz.domain.Product;
-import md.fedot.magaz.model.ProductRequestDTO;
-import md.fedot.magaz.model.ProductResponseDTO;
-import md.fedot.magaz.repos.CategoryRepository;
-import md.fedot.magaz.repos.ProductRepository;
-import md.fedot.magaz.util.BadRequestException;
-import md.fedot.magaz.util.NotFoundException;
+import md.fedot.magaz.model.Category;
+import md.fedot.magaz.model.Product;
+import md.fedot.magaz.dto.ProductRequestDto;
+import md.fedot.magaz.dto.ProductResponseDto;
+import md.fedot.magaz.repository.CategoryRepository;
+import md.fedot.magaz.repository.ProductRepository;
+import md.fedot.magaz.exception.BadRequestException;
+import md.fedot.magaz.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,67 +22,67 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
 
-    public List<ProductResponseDTO> findAll() {
+    public List<ProductResponseDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
-                .map(product -> mapToDTO(product, new ProductResponseDTO()))
+                .map(product -> mapToDTO(product, new ProductResponseDto()))
                 .toList();
     }
 
-    public ProductResponseDTO get(final Long id) {
+    public ProductResponseDto getProduct(Long id) {
         return productRepository.findById(id)
-                .map(product -> mapToDTO(product, new ProductResponseDTO()))
+                .map(product -> mapToDTO(product, new ProductResponseDto()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public ProductResponseDTO create(final ProductRequestDTO productRequestDTO) {
-        final Product product = new Product();
-        mapToEntity(productRequestDTO, product);
-        return mapToDTO(productRepository.save(product), new ProductResponseDTO());
+    public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
+        Product product = new Product();
+        mapToEntity(productRequestDto, product);
+        return mapToDTO(productRepository.save(product), new ProductResponseDto());
     }
 
-    public ProductResponseDTO update(final Long id, final ProductRequestDTO productRequestDTO) {
+    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequestDto) {
         Product product = productRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(productRequestDTO, product);
-        return mapToDTO(productRepository.save(product), new ProductResponseDTO());
+        mapToEntity(productRequestDto, product);
+        return mapToDTO(productRepository.save(product), new ProductResponseDto());
     }
 
-    public void delete(final Long id) {
+    public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
 
-    public ProductResponseDTO mapToDTO(final Product product, final ProductResponseDTO productResponseDTO) {
-        productResponseDTO.setId(product.getId());
-        productResponseDTO.setName(product.getName());
-        productResponseDTO.setDescription(product.getDescription());
-        productResponseDTO.setImage(product.getImage());
-        productResponseDTO.setPrice(product.getPrice());
-        productResponseDTO.setQuantity(product.getQuantity());
+    public ProductResponseDto mapToDTO(Product product, ProductResponseDto productResponseDto) {
+        productResponseDto.setId(product.getId());
+        productResponseDto.setName(product.getName());
+        productResponseDto.setDescription(product.getDescription());
+        productResponseDto.setImage(product.getImage());
+        productResponseDto.setPrice(product.getPrice());
+        productResponseDto.setQuantity(product.getQuantity());
 
-        final Category category = product.getCategory();
-        productResponseDTO.setCategory((category == null) ? null : category.getName());
+        Category category = product.getCategory();
+        productResponseDto.setCategory((category == null) ? null : category.getName());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        productResponseDTO.setCreatedAt(product.getCreatedAt().format(formatter));
-        productResponseDTO.setUpdatedAt(product.getUpdatedAt().format(formatter));
+        productResponseDto.setCreatedAt(product.getCreatedAt().format(formatter));
+        productResponseDto.setUpdatedAt(product.getUpdatedAt().format(formatter));
 
-        return productResponseDTO;
+        return productResponseDto;
     }
 
-    public Product mapToEntity(final ProductRequestDTO productRequestDTO, final Product product) {
-        product.setName(productRequestDTO.getName());
-        product.setDescription(productRequestDTO.getDescription());
+    public Product mapToEntity(ProductRequestDto productRequestDto, Product product) {
+        product.setName(productRequestDto.getName());
+        product.setDescription(productRequestDto.getDescription());
         try {
-            product.setImage(productRequestDTO.getImage().getBytes());
+            product.setImage(productRequestDto.getImage().getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        product.setPrice(productRequestDTO.getPrice());
-        product.setQuantity(productRequestDTO.getQuantity());
-        Category category = (productRequestDTO.getCategory() == null)
+        product.setPrice(productRequestDto.getPrice());
+        product.setQuantity(productRequestDto.getQuantity());
+        Category category = (productRequestDto.getCategory() == null)
                 ? null
-                :categoryRepository.findById(productRequestDTO.getCategory())
+                :categoryRepository.findById(productRequestDto.getCategory())
                 .orElseThrow(BadRequestException::new);
         product.setCategory(category);
         return product;

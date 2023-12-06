@@ -1,4 +1,4 @@
-package md.fedot.magaz.model;
+package md.fedot.magaz.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class OrderRequestDTO {
+public class OrderRequestDto {
 
     @NotNull
     private Long userId;

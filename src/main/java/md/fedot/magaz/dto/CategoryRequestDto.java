@@ -1,11 +1,11 @@
-package md.fedot.magaz.model;
+package md.fedot.magaz.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CategoryRequestDTO {
+public class CategoryRequestDto {
 
     @NotEmpty
     @Size(max = 50)

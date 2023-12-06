@@ -1,7 +1,7 @@
-package md.fedot.magaz.repos;
+package md.fedot.magaz.repository;
 
 import jakarta.transaction.Transactional;
-import md.fedot.magaz.domain.Product;
+import md.fedot.magaz.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

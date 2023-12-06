@@ -1,4 +1,4 @@
-package md.fedot.magaz.model;
+package md.fedot.magaz.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 
 @Data
-public class ProductRequestDTO {
+public class ProductRequestDto {
 
     @NotEmpty
     @Size(max = 50)

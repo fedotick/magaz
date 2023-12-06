@@ -1,4 +1,4 @@
-package md.fedot.magaz.domain;
+package md.fedot.magaz.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

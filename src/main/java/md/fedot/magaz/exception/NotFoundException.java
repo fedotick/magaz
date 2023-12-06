@@ -1,4 +1,4 @@
-package md.fedot.magaz.util;
+package md.fedot.magaz.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

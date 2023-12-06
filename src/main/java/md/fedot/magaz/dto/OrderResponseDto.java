@@ -1,4 +1,4 @@
-package md.fedot.magaz.model;
+package md.fedot.magaz.dto;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class OrderResponseDTO {
+public class OrderResponseDto {
 
     private Long id;
     private Long userId;

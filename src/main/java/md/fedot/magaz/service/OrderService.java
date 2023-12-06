@@ -1,18 +1,16 @@
 package md.fedot.magaz.service;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import md.fedot.magaz.domain.Order;
-import md.fedot.magaz.domain.Product;
-import md.fedot.magaz.domain.User;
-import md.fedot.magaz.model.OrderRequestDTO;
-import md.fedot.magaz.model.OrderResponseDTO;
-import md.fedot.magaz.repos.OrderRepository;
-import md.fedot.magaz.repos.ProductRepository;
-import md.fedot.magaz.repos.UserRepository;
-import md.fedot.magaz.util.BadRequestException;
-import md.fedot.magaz.util.NotFoundException;
-import org.hibernate.mapping.Selectable;
+import md.fedot.magaz.model.Order;
+import md.fedot.magaz.model.Product;
+import md.fedot.magaz.model.User;
+import md.fedot.magaz.dto.OrderRequestDto;
+import md.fedot.magaz.dto.OrderResponseDto;
+import md.fedot.magaz.repository.OrderRepository;
+import md.fedot.magaz.repository.ProductRepository;
+import md.fedot.magaz.repository.UserRepository;
+import md.fedot.magaz.exception.BadRequestException;
+import md.fedot.magaz.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,48 +21,48 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderService {
 
-    private OrderRepository orderRepository;
-    private ProductRepository productRepository;
-    private UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public OrderResponseDTO create(OrderRequestDTO orderRequestDTO) {
-        Order order = mapToEntity(orderRequestDTO, new Order());
-        return mapToDTO(orderRepository.save(order), new OrderResponseDTO());
-    }
-
-    public List<OrderResponseDTO> getAll() {
+    public List<OrderResponseDto> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(order -> mapToDTO(order, new OrderResponseDTO()))
+                .map(order -> mapToDTO(order, new OrderResponseDto()))
                 .toList();
     }
 
-    public OrderResponseDTO get(Long id) {
+    public OrderResponseDto getOrder(Long id) {
         return orderRepository.findById(id)
-                .map(order -> mapToDTO(order, new OrderResponseDTO()))
+                .map(order -> mapToDTO(order, new OrderResponseDto()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public OrderResponseDTO update(Long id, OrderRequestDTO orderRequestDTO) {
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
+        Order order = mapToEntity(orderRequestDto, new Order());
+        return mapToDTO(orderRepository.save(order), new OrderResponseDto());
+    }
+
+    public OrderResponseDto updateOrder(Long id, OrderRequestDto orderRequestDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(orderRequestDTO, order);
-        delete(id);
-        return mapToDTO(orderRepository.save(order), new OrderResponseDTO());
+        mapToEntity(orderRequestDto, order);
+        deleteOrder(id);
+        return mapToDTO(orderRepository.save(order), new OrderResponseDto());
     }
 
-    public void delete(Long id) {
+    public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
 
-    public Order mapToEntity(OrderRequestDTO orderRequestDTO, Order order) {
-        User user = userRepository.findById(orderRequestDTO.getUserId())
+    public Order mapToEntity(OrderRequestDto orderRequestDto, Order order) {
+        User user = userRepository.findById(orderRequestDto.getUserId())
                 .orElseThrow(BadRequestException::new);
         order.setUser(user);
 
-        if (orderRequestDTO.getProductIds().isEmpty()) {
+        if (orderRequestDto.getProductIds().isEmpty()) {
             throw new BadRequestException();
         }
-        List<Product> products = orderRequestDTO.getProductIds()
+        List<Product> products = orderRequestDto.getProductIds()
                 .stream()
                 .map(productId -> productRepository.findById(productId)
                         .orElseThrow(BadRequestException::new))
@@ -79,15 +77,15 @@ public class OrderService {
         return order;
     }
 
-    public OrderResponseDTO mapToDTO(Order order, OrderResponseDTO orderResponseDTO) {
-        orderResponseDTO.setId(order.getId());
-        orderResponseDTO.setUserId(order.getUser().getId());
-        orderResponseDTO.setProductIds(order.getProducts().stream().map(Product::getId).toList());
-        orderResponseDTO.setAmount(order.getAmount());
+    public OrderResponseDto mapToDTO(Order order, OrderResponseDto orderResponseDto) {
+        orderResponseDto.setId(order.getId());
+        orderResponseDto.setUserId(order.getUser().getId());
+        orderResponseDto.setProductIds(order.getProducts().stream().map(Product::getId).toList());
+        orderResponseDto.setAmount(order.getAmount());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-        orderResponseDTO.setCreatedAt(order.getCreatedAt().format(formatter));
-        return orderResponseDTO;
+        orderResponseDto.setCreatedAt(order.getCreatedAt().format(formatter));
+        return orderResponseDto;
     }
 
 }
