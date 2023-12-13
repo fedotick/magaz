@@ -3,7 +3,6 @@ package md.fedot.magaz.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import md.fedot.magaz.model.Category;
 import md.fedot.magaz.model.Product;
 
 import java.math.BigDecimal;
@@ -20,7 +19,7 @@ public class ProductResponseDto {
     private byte[] image;
     private BigDecimal price;
     private Short quantity;
-    private String category;
+    private CategoryResponseDto category;
     private String createdAt;
     private String updatedAt;
 
@@ -31,10 +30,7 @@ public class ProductResponseDto {
         this.image = product.getImage();
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
-
-        Category category = product.getCategory();
-        this.category = (category == null) ? null : category.getName();
-
+        this.category = new CategoryResponseDto(product.getCategory());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
         this.createdAt = product.getCreatedAt().format(formatter);
         this.updatedAt = product.getUpdatedAt().format(formatter);
