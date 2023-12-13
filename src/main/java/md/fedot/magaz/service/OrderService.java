@@ -13,10 +13,13 @@ import md.fedot.magaz.repository.UserRepository;
 import md.fedot.magaz.exception.BadRequestException;
 import md.fedot.magaz.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -73,15 +76,22 @@ public class OrderService {
     public OrderResponseDto updateOrder(Long id, OrderRequestDto orderRequestDto) {
         log.info("Updating order with ID: " + id);
 
-        orderRepository.findById(id)
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Order not found");
                     return new NotFoundException("Order not found");
                 });
 
-        deleteOrder(id);
+        mapToEntity(orderRequestDto, order);
 
-        return createOrder(orderRequestDto);
+        try {
+            orderRepository.save(order);
+            log.info("Order updated");
+        } catch (Exception e) {
+            log.error("Order was not updated: " + e.getMessage());
+        }
+
+        return new OrderResponseDto(order);
     }
 
     public void deleteOrder(Long id) {
@@ -121,7 +131,7 @@ public class OrderService {
                             log.warn("Product not found");
                             return new BadRequestException("Product not found");
                         }))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
         order.setProducts(products);
 
         BigDecimal amount = products.stream()

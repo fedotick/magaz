@@ -20,6 +20,7 @@ public class OrderResponseDto {
     private List<Long> productIds;
     private BigDecimal amount;
     private String createdAt;
+    private String updatedAt;
 
     public OrderResponseDto(Order order) {
         this.id = order.getId();
@@ -28,6 +29,7 @@ public class OrderResponseDto {
         this.amount = order.getAmount();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
         this.createdAt = order.getCreatedAt().format(formatter);
+        this.updatedAt = order.getUpdatedAt().format(formatter);
     }
 
 }
